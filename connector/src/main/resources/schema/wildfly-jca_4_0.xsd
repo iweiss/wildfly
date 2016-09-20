@@ -101,7 +101,14 @@
               </xs:annotation>
             </xs:element>
 
-            <xs:element name="cached-connection-manager" type="cached-connection-managerType" minOccurs="0" maxOccurs="1"></xs:element>
+            <xs:element name="cached-connection-manager" type="cached-connection-managerType" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Cached connection manager settings for resource adapters. NOTE: This service is always available so there's no
+                        way to remove it.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
         </xs:sequence>
     </xs:complexType>
 
