@@ -24,8 +24,14 @@ package org.jboss.as.connector.subsystems.jca;
 import org.jboss.as.connector.util.ConnectorServices;
 import org.jboss.as.controller.AbstractRemoveStepHandler;
 import org.jboss.as.controller.OperationContext;
+import org.jboss.as.controller.OperationFailedException;
 import org.jboss.as.controller.OperationStepHandler;
+import org.jboss.as.controller.PathAddress;
 import org.jboss.dmr.ModelNode;
+
+import java.util.Set;
+
+import static org.jboss.as.connector.subsystems.jca.JcaCachedConnectionManagerDefinition.PATH_CACHED_CONNECTION_MANAGER;
 
 /**
  * @author @author <a href="mailto:stefano.maestri@redhat.com">Stefano
@@ -34,6 +40,18 @@ import org.jboss.dmr.ModelNode;
 public class JcaSubSystemRemove extends AbstractRemoveStepHandler {
 
     static final OperationStepHandler INSTANCE = new JcaSubSystemRemove();
+
+    @Override
+    protected void performRemove(OperationContext context, ModelNode operation, ModelNode model) throws OperationFailedException {
+        final Set<String> childTypes = context.readResource(PathAddress.EMPTY_ADDRESS).getChildTypes();
+        int typeCount = childTypes.size();
+
+        if (typeCount > 1 || (typeCount == 1 && !childTypes.contains(PATH_CACHED_CONNECTION_MANAGER.getKey()))) {
+            super.performRemove(context, operation, model);
+        } else {
+            context.removeResource(PathAddress.EMPTY_ADDRESS);
+        }
+    }
 
     protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model) {
         context.removeService(ConnectorServices.CONNECTOR_CONFIG_SERVICE);
