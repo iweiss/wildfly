@@ -33,6 +33,7 @@ import org.jboss.as.arquillian.container.ManagementClient;
 import org.jboss.as.test.integration.management.ManagementOperations;
 import org.jboss.as.test.shared.FileUtils;
 import org.jboss.as.test.shared.integration.ejb.security.CallbackHandler;
+import org.jboss.as.test.shared.integration.ejb.security.PermissionUtils;
 import org.jboss.dmr.ModelNode;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -45,6 +46,7 @@ import org.junit.runner.RunWith;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import java.net.SocketPermission;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
@@ -175,6 +177,11 @@ public class DatabaseTimerServiceMultiNodeTestCase {
         final WebArchive war = ShrinkWrap.create(WebArchive.class, ARCHIVE_NAME + ".war");
         war.addClasses(Collector.class, RemoteTimedBean.class, TimedObjectTimerServiceBean.class, TimerData.class, FileUtils.class);
         war.addAsWebInfResource(DatabaseTimerServiceMultiNodeTestCase.class.getPackage(), "jboss-ejb3.xml", "jboss-ejb3.xml");
+
+        war.addAsManifestResource(PermissionUtils.createPermissionsXmlAsset(
+                new SocketPermission("*:9092", "connect,resolve")
+        ), "permissions.xml");
+
         if(!client) {
             war.addClass(CollectionSingleton.class);
         }
