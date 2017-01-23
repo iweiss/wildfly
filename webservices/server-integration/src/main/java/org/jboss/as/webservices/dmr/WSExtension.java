@@ -174,6 +174,11 @@ public final class WSExtension implements Extension {
                     .addReadOnlyAttribute(ENDPOINT_NAME)
                     .addReadOnlyAttribute(ENDPOINT_TYPE)
                     .addReadOnlyAttribute(ENDPOINT_WSDL)
+                    .addReadWriteAttribute(
+                            WSLiveMessageLogging.ATTRIBUTES[0],
+                            WSLiveMessageLogging.INSTANCE,
+                            WSLiveMessageLogging.INSTANCE
+                    )
                     .build());
         }
 
